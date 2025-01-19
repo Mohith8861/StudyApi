@@ -11,13 +11,7 @@ require("dotenv").config();
 const app = express();
 
 // Connect to MongoDB
-mongoose.connect(
-  "mongodb+srv://mohith8861:mxa2ormrYC42mLKx@cluster0.y9zyy.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-);
-
-// mongoose.connect(
-//   "mongodb+srv://mohit_harsh:mohit_harsh@cluster0.sas2c.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-// );
+mongoose.connect(process.env.MONGO_URI);
 
 app.use(express.json());
 app.use("/api/users", userRoutes);
