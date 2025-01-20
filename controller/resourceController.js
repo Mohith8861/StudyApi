@@ -155,12 +155,7 @@ class ResourceController {
         });
       }
 
-      await resource.remove();
-
-      // Remove resource from user's resources array
-      await User.findByIdAndUpdate(req.user.id, {
-        $pull: { resources: resource._id },
-      });
+      await resource.deleteOne();
 
       res.status(200).json({
         success: true,

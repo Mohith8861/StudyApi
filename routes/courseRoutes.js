@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const courseController = require("../controllers/courseController");
-const authController = require("../controllers/authController");
-router.post("/", courseController.createCourse);
+const courseController = require("../controller/courseController");
+const authController = require("../controller/authController");
+router.post("/", authController.protect, courseController.createCourse);
 router.get("/", courseController.searchCourses);
 router.get("/:id", courseController.getCourse);
 // router.get(":/field", courseController.getCoursesByField);

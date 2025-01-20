@@ -3,9 +3,9 @@ const express = require("express");
 const mongoose = require("mongoose");
 const userRoutes = require("./routes/userRoutes");
 const resourceRoutes = require("./routes/resourceRoutes");
-const topicRoutes = require("./routes/topicRoutes");
-const moduleRoutes = require("./routes/moduleRoutes");
 const courseRoutes = require("./routes/courseRoutes");
+const roadmapRoutes = require("./routes/roadmapRoutes");
+const mapRoutes = require("./routes/mapRoutes");
 const globalErrorHandler = require("./globalErrorHandler");
 require("dotenv").config();
 const app = express();
@@ -17,12 +17,12 @@ app.use(express.json());
 app.use("/api/users", userRoutes);
 app.use("/api/resource", resourceRoutes);
 app.use("/api/courses", courseRoutes);
-app.use("/api/topics", topicRoutes);
-app.use("/api/module", moduleRoutes);
+app.use("/api/roadmap", roadmapRoutes);
+app.use("/api/map", mapRoutes);
 
-// app.all('*', (req, res, next) => {
-//   next(new AppError(`Cant find ${req.originalUrl} on this server!!`, 404));
-// });
+app.all("*", (req, res, next) => {
+  next(new Error(`Cant find ${req.originalUrl} on this server!!`, 404));
+});
 
 app.use(globalErrorHandler);
 

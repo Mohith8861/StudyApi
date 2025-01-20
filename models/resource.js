@@ -12,11 +12,6 @@ const resourceSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    size: {
-      type: Number,
-      required: true,
-    },
-
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

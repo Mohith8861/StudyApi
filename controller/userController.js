@@ -22,9 +22,7 @@ class UserController {
   // Get all users
   async getAllUsers(req, res) {
     try {
-      const users = await User.find()
-        .populate("roadmaps")
-        .populate("resources");
+      const users = await User.find().select("-password");
 
       res.status(200).json({
         success: true,
@@ -42,9 +40,7 @@ class UserController {
   // Get single user
   async getUser(req, res) {
     try {
-      const user = await User.findById(req.params.id)
-        .populate("roadmaps")
-        .populate("resources");
+      const user = await User.findById(req.params.id).select("-password");
 
       if (!user) {
         return res.status(404).json({
@@ -68,17 +64,23 @@ class UserController {
   // Update user
   async updateUser(req, res) {
     try {
-      const user = await User.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
-        runValidators: true,
-      });
-
+      const user = await User.findById(req.params.id);
       if (!user) {
         return res.status(404).json({
           success: false,
           error: "User not found",
         });
       }
+      if (user.id.toString() !== req.user.id) {
+        return res.status(403).json({
+          success: false,
+          error: "User not authorized to update",
+        });
+      }
+      if (req.body.name) {
+        user.name = req.body.name;
+      }
+      await user.save();
 
       res.status(200).json({
         success: true,
@@ -103,40 +105,17 @@ class UserController {
           error: "User not found",
         });
       }
-
+      if (user.id.toString() !== req.user.id) {
+        return res.status(403).json({
+          success: false,
+          error: "User not authorized to update",
+        });
+      }
       await user.remove();
 
       res.status(200).json({
         success: true,
         data: {},
-      });
-    } catch (error) {
-      res.status(400).json({
-        success: false,
-        error: error.message,
-      });
-    }
-  }
-
-  // Add roadmap to user
-  async addRoadmap(req, res) {
-    try {
-      const user = await User.findByIdAndUpdate(
-        req.params.userId,
-        { $addToSet: { roadmaps: req.params.courseId } },
-        { new: true }
-      );
-
-      if (!user) {
-        return res.status(404).json({
-          success: false,
-          error: "User not found",
-        });
-      }
-
-      res.status(200).json({
-        success: true,
-        data: user,
       });
     } catch (error) {
       res.status(400).json({

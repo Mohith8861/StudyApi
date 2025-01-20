@@ -25,12 +25,10 @@ const courseSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    modules: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Module",
-      },
-    ],
+    roadmap: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Roadmap",
+    },
   },
   {
     toJSON: { virtuals: true },

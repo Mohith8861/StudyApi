@@ -20,18 +20,18 @@ const userSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    roadmaps: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Course",
-      },
-    ],
-    resources: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Resource",
-      },
-    ],
+    // courses: [
+    //   {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "Course",
+    //   },
+    // ],
+    // resources: [
+    //   {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "Resource",
+    //   },
+    // ],
   },
   {
     toJSON: { virtuals: true },

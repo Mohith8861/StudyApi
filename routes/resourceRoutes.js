@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const resourceController = require("../controllers/resourceController");
-const authController = require("../controllers/authController");
+const resourceController = require("../controller/resourceController");
+const authController = require("../controller/authController");
 
 router.post("/", authController.protect, resourceController.createResource);
 router.get("/", resourceController.getAllResources);

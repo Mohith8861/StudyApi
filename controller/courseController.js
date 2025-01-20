@@ -1,16 +1,12 @@
 const Course = require("../models/course");
 const User = require("../models/user");
-const Module = require("../models/module");
-const Topic = require("../models/topic");
 
 class CourseController {
   // Create a new course
   async createCourse(req, res) {
-    if (req.body.hasOwnProperty("modules")) {
-      delete req.body.modules;
-    }
     try {
       let course = new Course(req.body);
+      course.uId = req.user.id;
       await course.save();
 
       res.status(201).json({
@@ -28,15 +24,10 @@ class CourseController {
   // Get all courses
   async getAllCourses(req, res) {
     try {
-      const courses = await Course.find()
-        .populate("uId", "name email")
-        .populate({
-          path: "modules",
-          populate: {
-            path: "topics",
-            populate: "resources",
-          },
-        });
+      const courses = await Course.find().populate("uId", "name").populate({
+        path: "roadmap",
+        populate: "Modules resources",
+      });
 
       res.status(200).json({
         success: true,
@@ -55,13 +46,13 @@ class CourseController {
   async getCourse(req, res) {
     try {
       const course = await Course.findById(req.params.id)
-        .populate("uId", "name email")
         .populate({
-          path: "modules",
-          populate: {
-            path: "topics",
-            populate: "resources",
-          },
+          path: "uId",
+          populate: "name email",
+        })
+        .populate({
+          path: "roadmap",
+          populate: "Modules resources",
         });
 
       if (!course) {
@@ -101,9 +92,6 @@ class CourseController {
           success: false,
           error: "User not authorized to update this course",
         });
-      }
-      if (req.body.hasOwnProperty("modules")) {
-        delete req.body.modules;
       }
 
       const updatedCourse = await Course.findByIdAndUpdate(
@@ -268,49 +256,6 @@ class CourseController {
           error: "Course not found",
         });
       }
-
-      res.status(200).json({
-        success: true,
-        data: course,
-      });
-    } catch (error) {
-      res.status(400).json({
-        success: false,
-        error: error.message,
-      });
-    }
-  }
-
-  // Add module to course
-  async addModule(req, res) {
-    try {
-      const module = await Module.findById(req.params.moduleId);
-      if (!module) {
-        return res.status(404).json({
-          success: false,
-          error: "Module not found",
-        });
-      }
-      let course = await Course.findById(req.params.courseId);
-      if (!course) {
-        return res.status(404).json({
-          success: false,
-          error: "Course not found",
-        });
-      }
-      if (course.uId.toString() !== req.user.id) {
-        return res.status(403).json({
-          success: false,
-          error: "User not authorized to delete this course",
-        });
-      }
-      course = await course.updateOne(
-        { $addToSet: { modules: req.params.moduleId } },
-        { new: true }
-      );
-
-      module.courseId = course.id;
-      module.save();
 
       res.status(200).json({
         success: true,
