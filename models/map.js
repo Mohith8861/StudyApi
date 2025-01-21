@@ -5,11 +5,6 @@ const mapSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     require: true,
   },
-  entityType: {
-    type: String,
-    require: true,
-    enum: ["Roadmap", "Topic"],
-  },
   resourceId: {
     type: mongoose.Schema.ObjectId,
     required: true,

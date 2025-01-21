@@ -79,12 +79,6 @@ const roadmapSchema = new mongoose.Schema({
       },
     },
   ],
-  resources: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Resource",
-    },
-  ],
 });
 
 const Roadmap = mongoose.model("Roadmap", roadmapSchema);
